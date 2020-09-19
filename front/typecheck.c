@@ -34,6 +34,7 @@
 #include "tcforin.h"
 #include "module_decl.h"
 #include "enumred.h"
+#include "errors.h"
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
@@ -234,7 +235,8 @@ int expr_set_comb_type_symtab(expr * value, symtab_entry * entry, int * result)
                 *result = TYPECHECK_FAIL;
                 value->comb.comb = COMB_TYPE_ERR;
 
-                print_error_msg(value->line_no, "found enumerator %s", value->id.id);
+                print_error_no_msg(TYPECHECK_ERR_FOUND_ENUMERATOR,
+                                   value->line_no, "found enumerator %s", value->id.id);
             }
         break;
         case SYMTAB_MODULE_DECL:
@@ -249,7 +251,8 @@ int expr_set_comb_type_symtab(expr * value, symtab_entry * entry, int * result)
                 {
                     *result = TYPECHECK_FAIL;
                     value->comb.comb = COMB_TYPE_ERR;
-                    print_error_msg(value->line_no, "cannot use modules in this context (bindings?)");
+                    print_error_no_msg(TYPECHECK_ERR_CANNOT_USE_MODULE_IN_THIS_CONTEXT,
+                                       value->line_no, "cannot use modules in this context (bindings?)");
                 }
                 
             }
@@ -1019,9 +1022,10 @@ int expr_comb_is_enum(expr * value, int * result)
     }
 
     *result = TYPECHECK_FAIL;
-    print_error_msg(value->line_no,
-                    "expression is %s not enum name",
-                    comb_type_str(value->comb.comb));
+    print_error_no_msg(TYPECHECK_ERR_EXPR_IS_NOT_ENUM_NAME,
+                       value->line_no,
+                       "expression is %s not enum name",
+                       comb_type_str(value->comb.comb));
 
     return TYPECHECK_FAIL;
 }
@@ -1079,10 +1083,11 @@ int expr_comb_cmp_and_set(expr * left, expr * right, expr * value, int * result)
          {
              *result = TYPECHECK_FAIL;
              value->comb.comb = COMB_TYPE_ERR;
-             print_error_msg(value->line_no,
-                             "arrays are different first line %u second line %u",
-                             left->line_no,
-                             right->line_no);
+             print_error_no_msg(TYPECHECK_ERR_ARRAYS_ARE_DIFFERENT,
+                                value->line_no,
+                                "arrays are different first line %u second line %u",
+                                left->line_no,
+                                right->line_no);
          }
     }
     else if (left->comb.comb == COMB_TYPE_RANGE &&
@@ -1111,10 +1116,11 @@ int expr_comb_cmp_and_set(expr * left, expr * right, expr * value, int * result)
          {
              *result = TYPECHECK_FAIL;
              value->comb.comb = COMB_TYPE_ERR;
-             print_error_msg(value->line_no,
-                             "slices are different first line %u second line %u",
-                             left->line_no,
-                             right->line_no);
+             print_error_no_msg(TYPECHECK_ERR_SLICES_ARE_DIFFERENT,
+                                value->line_no,
+                                "slices are different first line %u second line %u",
+                                left->line_no,
+                                right->line_no);
          }
     }
     else if (left->comb.comb == COMB_TYPE_FUNC &&
@@ -1133,10 +1139,11 @@ int expr_comb_cmp_and_set(expr * left, expr * right, expr * value, int * result)
         {
             *result = TYPECHECK_FAIL;
             value->comb.comb = COMB_TYPE_ERR;
-            print_error_msg(value->line_no,
-                            "functions are different %s:%u %s:%u",
-                            left->id, left->line_no,
-                            right->id, right->line_no);
+            print_error_no_msg(TYPECHECK_ERR_FUNCTIONS_ARE_DIFFERENT,
+                               value->line_no,
+                               "functions are different %s:%u %s:%u",
+                               left->id, left->line_no,
+                               right->id, right->line_no);
         }
     }
     else if (left->comb.comb == COMB_TYPE_ENUMTYPE &&
@@ -1159,10 +1166,11 @@ int expr_comb_cmp_and_set(expr * left, expr * right, expr * value, int * result)
     {
         *result = TYPECHECK_FAIL;
         value->comb.comb = COMB_TYPE_ERR;
-        print_error_msg(value->line_no,
-                        "types on conditional expression do not match %s %s",
-                        comb_type_str(left->comb.comb),
-                        comb_type_str(right->comb.comb));
+        print_error_no_msg(TYPECHECK_ERR_TYPES_ON_COND_EXPR_ARE_DIFFERENT,
+                           value->line_no,
+                           "types on conditional expression do not match %s %s",
+                           comb_type_str(left->comb.comb),
+                           comb_type_str(right->comb.comb));
     }
 
     return 0;
@@ -1178,9 +1186,10 @@ int symtab_entry_exists(symtab_entry * entry, unsigned int line_no)
         case SYMTAB_FUNC:
         {
             func * al_func = entry->func_value;
-            print_error_msg(line_no,
-                            "function %s already defined at line %u",
-                            entry->id, al_func->line_no);
+            print_error_no_msg(TYPECHECK_ERR_FUNCTION_ALREADY_DEFINED,
+                               line_no,
+                               "function %s already defined at line %u",
+                               entry->id, al_func->line_no);
         }
         break;
         case SYMTAB_PARAM:

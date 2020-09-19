@@ -53,6 +53,16 @@ void print_error_msg(int line_no, const char * format, ...)
     va_end(args);
 }
 
+void print_error_no_msg(int error_no, int line_no, const char * format, ...)
+{
+    va_list args;
+    va_start(args, format);
+
+    print_error_msg(line_no, format, args);
+
+    va_end(args);
+}
+
 void print_warning_msg(int line_no, const char * format, ...)
 {
     va_list args;

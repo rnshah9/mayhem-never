@@ -1,5 +1,5 @@
-/**
- * Copyright 2018 Slawomir Maludzinski
+/** 
+ * Copyright 2020 Slawomir Maludzinski
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,15 +19,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef __UTILS_H__
-#define __UTILS_H__ 1
+#ifndef __ERRORS_H__
+#define __ERRORS_H__
 
-const char * get_utils_file_name();
-void set_utils_file_name(const char * file_name);
+#define TYPECHECK_ERR_UNKNOWN           0x0
+#define TYPECHECK_ERR_UNKNOWN_EXCEPTION 0x1
+#define TYPECHECK_ERR_FOUND_ENUMERATOR  0x2
+#define TYPECHECK_ERR_CANNOT_USE_MODULE_IN_THIS_CONTEXT 0x3
+#define TYPECHECK_ERR_EXPR_IS_NOT_ENUM_NAME 0x4
+#define TYPECHECK_ERR_ARRAYS_ARE_DIFFERENT 0x5
+#define TYPECHECK_ERR_SLICES_ARE_DIFFERENT 0x6
+#define TYPECHECK_ERR_FUNCTIONS_ARE_DIFFERENT 0x7
+#define TYPECHECK_ERR_TYPES_ON_COND_EXPR_ARE_DIFFERENT 0x8
+#define TYPECHECK_ERR_FUNCTION_ALREADY_DEFINED 0x9
 
-void print_error_msg(int line_no, const char * format, ...);
-void print_error_no_msg(int error_no, int line_no, const char * format, ...);
 
-void print_warning_msg(int line_no, const char * format, ...);
-
-#endif /* __UTILS_H__ */
+#endif /* __ERRORS_H__ */
