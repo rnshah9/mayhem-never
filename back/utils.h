@@ -22,11 +22,16 @@
 #ifndef __UTILS_H__
 #define __UTILS_H__ 1
 
+typedef void func_error_no_msg(int error_no, int line_no, const char * format, ...);
+
 const char * get_utils_file_name();
 void set_utils_file_name(const char * file_name);
 
 void print_error_msg(int line_no, const char * format, ...);
-void print_error_no_msg(int error_no, int line_no, const char * format, ...);
+
+extern func_error_no_msg * print_error_no_msg;
+void set_print_error_no_msg(func_error_no_msg * func);
+void print_error_no_msg_default(int error_no, int line_no, const char * format, ...);
 
 void print_warning_msg(int line_no, const char * format, ...);
 

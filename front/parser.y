@@ -625,19 +625,16 @@ match_guard_record: TOK_ID TOK_DOT TOK_ID TOK_DDOT TOK_ID '(' matchbind_list ')'
 match_guard: match_guard_item TOK_RET expr
 {
     $$ = match_guard_new_item($1, $3);
-    $$->line_no = $<line_no>1;
 };
 
 match_guard: match_guard_record TOK_RET expr
 {
     $$ = match_guard_new_record($1, $3);
-    $$->line_no = $<line_no>1;
 };
 
 match_guard: TOK_ELSE TOK_RET expr
 {
     $$ = match_guard_new_else($3);
-    $$->line_no = $<line_no>1;
 };
 
 match_guard_list: match_guard ';'

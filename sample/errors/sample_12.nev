@@ -1,0 +1,8 @@
+
+record R { i : int; }
+record R { j : int; }
+
+func main() -> int
+{
+    0
+}

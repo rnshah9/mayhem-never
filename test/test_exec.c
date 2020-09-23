@@ -20,6 +20,7 @@
  * THE SOFTWARE.
  */
 #include "nev.h"
+#include "utils.h"
 #include <assert.h>
 #include <dirent.h>
 #include <stdio.h>
@@ -43,7 +44,7 @@ char * readall(const char * file)
     er = fread(src, sizeof(char), fsize, f);
     if (er != (size_t)fsize)
     {
-        fprintf(stderr, "could not read the while file %s expected %lu read %lu\n",
+        fprintf(stderr, "could not read whole file %s expected %lu read %lu\n",
                         file, fsize, er);
     }
     fclose(f);
@@ -226,13 +227,80 @@ void test_samples(const char * dirpath)
         {
             if (strcmp(".", ent->d_name) == 0 ||
                 strcmp("..", ent->d_name) == 0 ||
-                strcmp("lib", ent->d_name) == 0)
+                strcmp("lib", ent->d_name) == 0 ||
+                strcmp("errors", ent->d_name) == 0)
             {
                 continue;
             }
             char samplepath[PATH_MAX + 1] = { 0 };
             snprintf(samplepath, PATH_MAX, "%s/%s", dirpath, ent->d_name);
             test_sample((const char *)samplepath);
+        }
+        closedir(dir);
+    }
+}
+
+int test_error_no;
+int test_error_no_found;
+
+void test_error_init(int error_no)
+{
+    test_error_no = error_no;
+    test_error_no_found = 0;
+}
+
+void test_error_no_msg_default(int error_no, int line_no, const char * format, ...)
+{
+    if (error_no == test_error_no)
+    {
+        test_error_no_found = 1;
+    }
+}
+
+void test_error(const char * samplepath, int error_no)
+{
+    program * prog = program_new();
+    char * prog_str = readall(samplepath);
+
+    if (prog_str != NULL)
+    {
+        int ret = nev_compile_str(prog_str, prog);
+        if (ret != 0)
+        {
+            printf("path: %s\n", samplepath);
+        }
+        assert(ret != 0);
+        assert(test_error_no_found == 1);
+
+        free(prog_str);
+    }
+    
+    program_delete(prog);
+}    
+
+void test_errors(const char * dirpath)
+{
+    DIR * dir;
+    struct dirent * ent = NULL;
+
+    set_print_error_no_msg(test_error_no_msg_default);
+        
+    if ((dir = opendir(dirpath)) != NULL)
+    {
+        while ((ent = readdir(dir)) != NULL)
+        {
+            if (strcmp(".", ent->d_name) == 0 ||
+                strcmp("..", ent->d_name) == 0)
+            {
+                continue;
+            }
+            unsigned int error_no;
+            char errorpath[PATH_MAX + 1] = { 0 };
+            snprintf(errorpath, PATH_MAX, "%s/%s", dirpath, ent->d_name);
+            sscanf(ent->d_name, "%*[a-zA-Z0-9]_%x.nev", &error_no);
+
+            test_error_init(error_no);
+            test_error((const char *)errorpath, error_no);
         }
         closedir(dir);
     }
@@ -251,7 +319,8 @@ int main(int argc, char * argv[])
     test_one();
     test_two();
     test_three();
-    test_samples((const char *)"../sample");
+    test_samples("../sample");
+    test_errors("../sample/errors");
 
     return 0;
 }

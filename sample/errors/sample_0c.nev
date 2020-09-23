@@ -1,0 +1,8 @@
+
+func main() -> int
+{
+    let a = 10;
+    let a = 10;
+
+    0
+}

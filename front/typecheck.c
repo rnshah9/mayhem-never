@@ -1186,7 +1186,7 @@ int symtab_entry_exists(symtab_entry * entry, unsigned int line_no)
         case SYMTAB_FUNC:
         {
             func * al_func = entry->func_value;
-            print_error_no_msg(TYPECHECK_ERR_FUNCTION_ALREADY_DEFINED,
+            print_error_no_msg(TYPECHECK_ERR_FUNC_ALREADY_DEFINED,
                                line_no,
                                "function %s already defined at line %u",
                                entry->id, al_func->line_no);
@@ -1195,73 +1195,82 @@ int symtab_entry_exists(symtab_entry * entry, unsigned int line_no)
         case SYMTAB_PARAM:
         {
             param * al_param = entry->param_value;
-            print_error_msg(line_no,
-                            "parameter %s already defined at line %u",
-                            entry->id, al_param->line_no);
+            print_error_no_msg(TYPECHECK_ERR_PARAM_ALREADY_DEFINED,
+                               line_no,
+                               "parameter %s already defined at line %u",
+                               entry->id, al_param->line_no);
         }
         break;
         case SYMTAB_BIND:
         {
             bind * al_bind = entry->bind_value;
-            print_error_msg(line_no,
-                            "bind %s already defined at line %u",
-                            entry->id, al_bind->line_no);
+            print_error_no_msg(TYPECHECK_ERR_BIND_ALREADY_DEFINED,
+                               line_no,
+                               "bind %s already defined at line %u",
+                               entry->id, al_bind->line_no);
         }
         break;
         case SYMTAB_MATCHBIND:
         {
             matchbind * al_matchbind = entry->matchbind_value;
-            print_error_msg(line_no,
-                            "match bind %s already defined at line %u",
-                            entry->id, al_matchbind->line_no);
+            print_error_no_msg(TYPECHECK_ERR_MATCHBIND_ALREADY_DEFINED,
+                               line_no,
+                               "match bind %s already defined at line %u",
+                               entry->id, al_matchbind->line_no);
         }
         break;
         case SYMTAB_QUALIFIER:
         {
             qualifier * al_qualifier = entry->qualifier_value;
-            print_error_msg(line_no,
-                            "qualifier %s already defined at line %u",
-                            entry->id, al_qualifier->line_no);
+            print_error_no_msg(TYPECHECK_ERR_QUALIFIER_ALREADY_DEFINED,
+                               line_no,
+                               "qualifier %s already defined at line %u",
+                               entry->id, al_qualifier->line_no);
         }
         break;
         case SYMTAB_FORIN:
         {
             forin * al_forin = entry->forin_value;
-            print_error_msg(line_no,
-                            "forin iterator %s already defined at line %u",
-                            entry->id, al_forin->line_no);
+            print_error_no_msg(TYPECHECK_ERR_FORIN_ALREADY_DEFINED,
+                               line_no,
+                               "forin iterator %s already defined at line %u",
+                               entry->id, al_forin->line_no);
         }
         break;
         case SYMTAB_ENUMERATOR:
         {
             enumerator * al_enumerator = entry->enumerator_value;
-            print_error_msg(line_no,
-                            "enum item %s already defined at line %u",
-                            entry->id, al_enumerator->line_no);
+            print_error_no_msg(TYPECHECK_ERR_ENUMERATOR_ALREADY_DEFINED,
+                               line_no,
+                               "enum item %s already defined at line %u",
+                               entry->id, al_enumerator->line_no);
         }
         break;
         case SYMTAB_ENUMTYPE:
         {
             enumtype * al_enumtype = entry->enumtype_value;
-            print_error_msg(line_no,
-                            "enum %s already defined at line %u",
-                            entry->id, al_enumtype->line_no);
+            print_error_no_msg(TYPECHECK_ERR_ENUMTYPE_ALREADY_DEFINED,
+                               line_no,
+                               "enum %s already defined at line %u",
+                               entry->id, al_enumtype->line_no);
         }
         break;
         case SYMTAB_RECORD:
         {
             record * al_record = entry->record_value;
-            print_error_msg(line_no,
-                            "record %s already defined at line %u",
-                            entry->id, al_record->line_no);
+            print_error_no_msg(TYPECHECK_ERR_RECORD_ALREADY_DEFINED,
+                               line_no,
+                               "record %s already defined at line %u",
+                               entry->id, al_record->line_no);
         }
         break;
         case SYMTAB_MODULE_DECL:
         {
             module_decl * al_module_decl = entry->module_decl_value;
-            print_error_msg(line_no,
-                            "module decl %s already defined at line %u",
-                            entry->id, al_module_decl->line_no);
+            print_error_no_msg(TYPECHECK_ERR_MODULE_DECL_ALREADY_DEFINED,
+                               line_no,
+                               "module decl %s already defined at line %u",
+                               entry->id, al_module_decl->line_no);
         }
         break;
     }
@@ -1672,8 +1681,9 @@ int expr_id_check_type(symtab * tab, expr * value, int * result)
     {
         *result = TYPECHECK_FAIL;
         value->comb.comb = COMB_TYPE_ERR;
-        print_error_msg(value->line_no, "cannot find identifier %s",
-                        value->id.id);
+        print_error_no_msg(TYPECHECK_ERR_IDENTIFIER_NOT_FOUND,
+                           value->line_no, "cannot find identifier %s",
+                           value->id.id);
     }
     return 0;
 }
@@ -3885,9 +3895,10 @@ int never_add_module_decl(module_decl * module_modules, module_decl * module_std
             {
                 module_decl * al_module_decl = entry->module_decl_value;                
                 *result = TYPECHECK_FAIL;
-                print_error_msg(value->line_no,
-                                "same use %s already used at %u",
-                                use_id, al_module_decl->line_no);
+                print_error_no_msg(TYPECHECK_ERR_MODULE_DECL_ALREADY_DEFINED,
+                                   value->line_no,
+                                   "same use %s already used at %u",
+                                   use_id, al_module_decl->line_no);
             }
         }
         break;
@@ -3900,9 +3911,10 @@ int never_add_module_decl(module_decl * module_modules, module_decl * module_std
             {
                 module_decl * al_module_decl = entry->module_decl_value;
                 *result = TYPECHECK_FAIL;
-                print_error_msg(value->line_no,
-                                "same use %s already used at %u",
-                                use_id, al_module_decl->line_no);
+                print_error_no_msg(TYPECHECK_ERR_MODULE_DECL_ALREADY_DEFINED,
+                                   value->line_no,
+                                  "same use %s already used at %u",
+                                   use_id, al_module_decl->line_no);
             }
 
             assert (module_modules != NULL &&

@@ -1,0 +1,10 @@
+
+func A(a : int, a : int) -> int
+{
+    0
+}
+
+func main() -> int
+{
+    0
+}

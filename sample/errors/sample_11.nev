@@ -1,0 +1,7 @@
+enum E { ONE }
+enum E { TWO }
+
+func main() -> int
+{
+    0
+}

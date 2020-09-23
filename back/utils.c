@@ -24,6 +24,7 @@
 #include <stdio.h>
 
 const char * utils_file_name = "<stdin>";
+func_error_no_msg * print_error_no_msg = print_error_no_msg_default;
 
 const char * get_utils_file_name()
 {
@@ -35,12 +36,13 @@ void set_utils_file_name(const char * file_name)
     utils_file_name = file_name;
 }
 
-void print_error_msg(int line_no, const char * format, ...)
+void set_print_error_no_msg(func_error_no_msg * func)
 {
-    va_list args;
+    print_error_no_msg = func;
+}
 
-    va_start(args, format);
-
+void print_error_msg_va_list(int line_no, const char * format, va_list args)
+{
     fprintf(stderr, "%s:%d: error: ", utils_file_name, line_no);
     vfprintf(stderr, format, args);
 
@@ -49,16 +51,24 @@ void print_error_msg(int line_no, const char * format, ...)
 #else
     fprintf(stderr, "\r\n");
 #endif
-
-    va_end(args);
 }
 
-void print_error_no_msg(int error_no, int line_no, const char * format, ...)
+void print_error_msg(int line_no, const char * format, ...)
 {
     va_list args;
     va_start(args, format);
 
-    print_error_msg(line_no, format, args);
+    print_error_msg_va_list(line_no, format, args);
+
+    va_end(args);
+}
+
+void print_error_no_msg_default(int error_no, int line_no, const char * format, ...)
+{
+    va_list args;
+    va_start(args, format);
+
+    print_error_msg_va_list(line_no, format, args);
 
     va_end(args);
 }
