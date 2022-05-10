@@ -1,0 +1,6 @@
+project: rnshah9/mayhem-never
+target: never
+
+cmds:
+  - cmd: /never/build/never -f @@
+    filepath: /test.nev
