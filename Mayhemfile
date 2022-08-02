@@ -2,5 +2,4 @@ project: never
 target: never
 
 cmds:
-  - cmd: /never/build/never -f /test.nev
-    filepath: /test.nev
+  - cmd: /never -f @@
